@@ -1,11 +1,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ModHelper.Common.Configs;
 using ModHelper.Helpers;
 using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -37,18 +35,9 @@ namespace ModHelper.UI.Buttons
             Left.Set(-20, 0); // CUSTOM CUSTOM CUSTOM -20!
             Top.Set(-buttonSize, 0); // Start at normal position for Expanded state
 
-            // Alignment bottom center
+            // Alignment bottom right
             VAlign = 1f;
             HAlign = 0.5f;
-
-            if (Conf.C.ButtonPosition == "Left")
-            {
-                HAlign = 0f;
-                VAlign = 0.8f;
-                Top.Set(-buttonSize - 15 / 2, 0);
-                Left.Set(buttonSize, 0);
-                SetImage(CollapseLeft.Value); // unsure if this works
-            }
         }
 
         public override void LeftClick(UIMouseEvent evt)
@@ -88,13 +77,6 @@ namespace ModHelper.UI.Buttons
             foreach (BaseButton btn in sys.mainState.AllButtons)
             {
                 btn.Active = sys.mainState.AreButtonsShowing;
-
-                // force MP button to disable when expanded if in SP
-                if (Main.netMode == NetmodeID.SinglePlayer && btn is ReloadMPButton spBtn)
-                {
-                    spBtn.Active = false;
-                    spBtn.ButtonText.Active = false;
-                }
             }
         }
 
@@ -107,31 +89,15 @@ namespace ModHelper.UI.Buttons
 
             if (mainState != null)
             {
-                if (Conf.C.ButtonPosition == "Bottom")
+                if (mainState.AreButtonsShowing)
                 {
-                    if (mainState.AreButtonsShowing)
-                    {
-                        SetImage(CollapseDown.Value);
-                        Top.Set(-buttonSize, 0); // Expanded
-                    }
-                    else
-                    {
-                        SetImage(CollapseUp.Value);
-                        Top.Set(0, 0); // Collapsed
-                    }
+                    SetImage(CollapseDown.Value);
+                    Top.Set(-buttonSize, 0); // Expanded
                 }
-                else if (Conf.C.ButtonPosition == "Left")
+                else
                 {
-                    if (mainState.AreButtonsShowing)
-                    {
-                        SetImage(CollapseLeft.Value);
-                        Left.Set(buttonSize, 0); // Expanded
-                    }
-                    else
-                    {
-                        SetImage(CollapseRight.Value);
-                        Left.Set(0, 0); // Collapsed
-                    }
+                    SetImage(CollapseUp.Value);
+                    Top.Set(0, 0); // Collapsed
                 }
             }
         }
@@ -152,14 +118,7 @@ namespace ModHelper.UI.Buttons
             float buttonSize = mainState?.ButtonSize ?? 0;
             if (sys != null && mainState.AreButtonsShowing)
             {
-                if (Conf.C.ButtonPosition == "Bottom")
-                {
-                    Top.Set(-buttonSize, 0);
-                }
-                else if (Conf.C.ButtonPosition == "Left")
-                {
-                    Left.Set(buttonSize, 0);
-                }
+                Top.Set(-buttonSize, 0);
             }
 
             base.Draw(spriteBatch);

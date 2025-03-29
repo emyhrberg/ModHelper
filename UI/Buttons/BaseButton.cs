@@ -25,7 +25,7 @@ namespace ModHelper.UI.Buttons
         protected Asset<Texture2D> Spritesheet { get; set; }
         public string HoverText = "";
         public string HoverTextDescription;
-        protected float opacity = 0.8f;
+        protected float opacity = 0.9f;
         public ButtonText ButtonText;
         public bool Active = true;
         public bool ParentActive = false;
@@ -42,7 +42,7 @@ namespace ModHelper.UI.Buttons
         protected abstract int FrameWidth { get; } // abstract means force child classes to implement this
         protected abstract int FrameHeight { get; } // abstract means force child classes to implement this
 
-        // Constructor
+        #region Constructor
         protected BaseButton(Asset<Texture2D> spritesheet, string buttonText, string hoverText, string hoverTextDescription = "", float textSize = 0.9f) : base(spritesheet)
         {
             Button = Ass.Button;
@@ -59,6 +59,7 @@ namespace ModHelper.UI.Buttons
             ButtonText = new ButtonText(text: buttonText, textScale: textSize, large: false);
             Append(ButtonText);
         }
+        #endregion
 
         public void UpdateHoverText()
         {
@@ -67,6 +68,7 @@ namespace ModHelper.UI.Buttons
             HoverText = $"Reload {modsToReload}";
         }
 
+        #region Draw
         /// <summary>
         /// Draws the button with the specified image/animation and tooltip text
         /// </summary>
@@ -78,8 +80,6 @@ namespace ModHelper.UI.Buttons
             // Get the button size from MainState (default to 70 if MainState is null)
             MainSystem sys = ModContent.GetInstance<MainSystem>();
             float buttonSize = sys.mainState?.ButtonSize ?? 70f;
-
-            // Update the scale based on the buttonsize. 70f means a scale of 1. For every 10 pixels, the scale is increased by 0.1f.
 
             // Get the dimensions based on the button size.
             CalculatedStyle dimensions = GetInnerDimensions();
@@ -98,14 +98,6 @@ namespace ModHelper.UI.Buttons
             {
                 spriteBatch.Draw(ButtonNoOutline.Value, drawRect, Color.Black * 0.3f);
             }
-
-            // if (this is ReloadSPButton || this is ReloadMPButton || this is LaunchButton)
-            // {
-            //     // Draw the button with full opacity.
-            //     spriteBatch.Draw(ButtonNoOutline.Value, drawRect, Color.Green * 0.5f);
-            // }
-
-            //Log.Info("parent active: " + ParentActive + "name: " + HoverText);
 
             if (ParentActive)
             {
@@ -132,7 +124,7 @@ namespace ModHelper.UI.Buttons
                     if (frameCounter >= FrameSpeed)
                     {
                         // This is needed because ItemButton is set to end animation at its last frame 5.
-                        if (this is ItemButton || this is ModsButton)
+                        if (this is ModsButton)
                         {
                             if (currFrame < FrameCount) // only increment if not at last frame
                             {
@@ -164,19 +156,10 @@ namespace ModHelper.UI.Buttons
                 // Draw the spritesheet.
                 spriteBatch.Draw(Spritesheet.Value, centeredPosition, sourceRectangle, Color.White * opacity, 0f, Vector2.Zero, Scale, SpriteEffects.None, 0f);
             }
-
-            // Update: Drawing is now done in MainState
-            /// <see cref="MainState"/> 
-            // Draw tooltip text if hovering and HoverText is given (see MainState).
-            // if (!string.IsNullOrEmpty(HoverText) && IsMouseHovering)
-            // {
-            //     UICommon.TooltipMouseText(HoverText);
-
-            //     DrawHelper.DrawTooltipPanel(this, "a", HoverText); // Draw the tooltip panel
-            // }
         }
 
-        //Disable button click if config window is open
+        #endregion
+        // Disable button click if config window is open
         public override bool ContainsPoint(Vector2 point)
         {
             if (!Active) // Dont allow clicking if button is disabled.
@@ -209,17 +192,18 @@ namespace ModHelper.UI.Buttons
             return base.ContainsPoint(point);
         }
 
-        // Disable item use on click
         public override void Update(GameTime gameTime)
         {
-            // base update
-            base.Update(gameTime);
+            if (!Active)
+                return;
 
             // disable item use if the button is hovered
-            if (ContainsPoint(Main.MouseScreen))
+            if (IsMouseHovering)
             {
                 Main.LocalPlayer.mouseInterface = true;
             }
+
+            base.Update(gameTime);
         }
     }
 }

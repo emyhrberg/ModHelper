@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ModHelper.Common.Configs;
 using ModHelper.Common.Systems;
+using ModHelper.Common.Systems.MainMenu;
 using ModHelper.UI;
 using ModHelper.UI.Buttons;
 using ReLogic.Content;
@@ -86,10 +87,6 @@ namespace ModHelper.Helpers
             }
 
             CalculatedStyle dims = element.GetDimensions();
-            if (element is WorldButton)
-            {
-                dims.Y -= 15f;
-            }
 
             float tooltipX = dims.X + (dims.Width - width) / 2f;
             float tooltipY = dims.Y - height;

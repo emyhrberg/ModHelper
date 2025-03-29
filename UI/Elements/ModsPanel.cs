@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ModHelper.Helpers;
 using ReLogic.Content;
@@ -15,20 +16,20 @@ namespace ModHelper.UI.Elements
     /// <summary>
     /// A panel to display the contents of client.log.
     /// </summary>
-    public class ModsPanel : OptionPanel
+    public class ModsPanel : BasePanel
     {
         public List<ModSourcesElement> modSourcesElements = [];
 
         // enabled mods
-        private List<ModElement> modElements = [];
-        private OptionElement toggleAllEnabledMods;
+        private readonly List<ModElement> modElements = [];
+        private readonly OptionElement toggleAllEnabledMods;
 
-        // disabled mods
-        public List<ModElement> allMods = [];
-        private OptionElement toggleAllAllMods;
+        // all mods
+        private readonly List<ModElement> allMods = [];
+        private readonly OptionElement toggleAllAllMods;
 
         #region Constructor
-        public ModsPanel() : base(title: "Mods", scrollbarEnabled: true)
+        public ModsPanel() : base(header: "Mods")
         {
             // Active = true; // uncomment to show the panel by default
             AddPadding(5);
@@ -350,5 +351,105 @@ namespace ModHelper.UI.Elements
             Main.menuMode = 10000;
         }
         #endregion
+
+        public override void Update(GameTime gameTime)
+        {
+            if (!Active)
+            {
+                return;
+            }
+            base.Update(gameTime);
+        }
+
+        #region Draw
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (!Active)
+            {
+                return;
+            }
+
+            // first draw everything in the panel
+            base.Draw(spriteBatch);
+
+            // last, draw the hover texture
+            foreach (var element in uiList._items.ToList())
+            {
+                if (element is ModElement modElement)
+                {
+                    var icon = modElement.modIcon;
+                    if (icon != null && icon.IsHovered && icon.updatedTex != null)
+                    {
+                        Vector2 mousePos = new(Main.mouseX - icon.Width.Pixels * 4, Main.mouseY - icon.Height.Pixels * 2);
+                        spriteBatch.Draw(icon.updatedTex, mousePos, Color.White);
+                    }
+                }
+                else if (element is ModSourcesElement modSourcesElement)
+                {
+                    var icon = modSourcesElement.modIcon;
+                    if (icon != null && icon.IsHovered && icon.tex != null)
+                    {
+                        Vector2 mousePos = new(Main.mouseX - icon.Width.Pixels * 4, Main.mouseY - icon.Height.Pixels * 2);
+                        spriteBatch.Draw(icon.tex, mousePos, Color.White);
+
+                        // Determine the color based on the time ago
+                        TimeSpan timeAgo = DateTime.Now - icon.lastModified;
+                        Color timeColor = timeAgo.TotalSeconds < 60 ? new Color(5, 230, 55) :
+                                          timeAgo.TotalMinutes < 60 ? new Color(5, 230, 55) :
+                                          timeAgo.TotalHours < 24 ? Color.Orange :
+                                          Color.Red;
+
+                        string builtAgo = ConvertLastModifiedToTimeAgo(icon.lastModified);
+
+                        if (!string.IsNullOrEmpty(builtAgo))
+                        {
+                            Utils.DrawBorderString(
+                                spriteBatch,
+                                text: $"Built {builtAgo}",
+                                new Vector2(mousePos.X + icon.Width.Pixels, mousePos.Y - 10),
+                                timeColor,
+                                scale: 1.0f,
+                                0.5f,
+                                0.5f
+                            );
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        private static string ConvertLastModifiedToTimeAgo(DateTime lastModified)
+        {
+            TimeSpan timeAgo = DateTime.Now - lastModified;
+            if (timeAgo.TotalSeconds < 60)
+            {
+                return $"{timeAgo.Seconds} seconds ago";
+            }
+            else if (timeAgo.TotalMinutes < 2)
+            {
+                return $"{timeAgo.Minutes} minute ago";
+            }
+            else if (timeAgo.TotalMinutes < 60)
+            {
+                return $"{timeAgo.Minutes} minutes ago";
+            }
+            else if (timeAgo.TotalHours < 2)
+            {
+                return $"{timeAgo.Hours} hour ago";
+            }
+            else if (timeAgo.TotalHours < 24)
+            {
+                return $"{timeAgo.Hours} hours ago";
+            }
+            else if (timeAgo.TotalDays < 2)
+            {
+                return $"{timeAgo.Days} day ago";
+            }
+            else
+            {
+                return $"{timeAgo.Days} days ago";
+            }
+        }
     }
 }

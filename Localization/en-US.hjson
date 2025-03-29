@@ -6,12 +6,10 @@ Mods: {
 
 				Headers: {
 					Reload: Reload
-					Misc: Misc
 					Game: Game
 					NPCSpawner: NPC Spawner
-					UI: UI
 					Logging: Logging
-					MainMenu: Main Menu Header
+					MainMenu: Main Menu
 				}
 
 				ClearClientLogOnReload: {
@@ -39,16 +37,6 @@ Mods: {
 						'''
 				}
 
-				DraggablePanels: {
-					Label: Draggable Panels
-					Tooltip: Makes all panels draggable
-				}
-
-				ButtonSize: {
-					Tooltip: Set the size of the buttons in the hotbar
-					Label: Button Size
-				}
-
 				LogToLogFile: {
 					Label: Log To Log File
 					Tooltip: Whether to log debug and info and error messages to the client.log file
@@ -59,24 +47,9 @@ Mods: {
 					Tooltip: Whether to log debug messages to the chat
 				}
 
-				PanelWidth: {
-					Label: Panel Width
-					Tooltip: Adjust the width of the item and NPC spawner panels
-				}
-
-				PanelHeight: {
-					Label: Panel Height
-					Tooltip: Adjust the height of all panels
-				}
-
 				Reload: {
 					Label: Reload
 					Tooltip: Enable or disable the entire reload functionality
-				}
-
-				ButtonPosition: {
-					Label: Button Position
-					Tooltip: All buttons will stick to this side of the screen
 				}
 
 				GameKeepRunning: {
@@ -107,6 +80,16 @@ Mods: {
 				CreateMainMenuButtons: {
 					Label: Create Main Menu Buttons
 					Tooltip: ""
+				}
+
+				SuperModeGlow: {
+					Label: Super Mode Glow
+					Tooltip: ""
+				}
+
+				ShowDebugText: {
+					Tooltip: ""
+					Label: Show Debug Text
 				}
 			}
 		}

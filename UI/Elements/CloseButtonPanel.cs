@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ModHelper.Helpers;
+using ModHelper.UI.Buttons;
 using ReLogic.Content;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace ModHelper.UI.Elements
@@ -41,44 +44,37 @@ namespace ModHelper.UI.Elements
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            // Find the parent DraggablePanel containing this close button
+            // Find the parent BasePanel containing this close button
             UIElement current = Parent;
-            while (current != null && !(current is DraggablePanel))
+            while (current != null && current is not BasePanel)
             {
                 current = current.Parent;
             }
 
             // If we found the parent panel, deactivate it
-            if (current is DraggablePanel panel && panel.GetActive())
+            if (current is BasePanel panel && panel.GetActive())
             {
                 Log.Info("CloseButtonPanel: Deactivated panel with name: " + panel.GetType().Name);
                 panel.SetActive(false);
-                // Log.Info("CloseButtonPanel: Deactivated panel with name: " + panel.GetType().Name);
+
+                // Also update the parentActive property of the button
+                // The parent is BasePanel, and BaseButton is something else entirely.
+                // Maybe use Mainstate.AllButtons to find the button that opened this panel?
+                // Or just set the parentActive to false here, since we are closing the panel anyway.
+                // This is a bit hacky, but it works for now.
+
+                // Find the button that opened this panel
+                MainSystem sys = ModContent.GetInstance<MainSystem>();
+                List<BaseButton> buttons = sys?.mainState?.AllButtons;
+                foreach (var button in buttons)
+                {
+                    if (button is BaseButton baseButton && baseButton.Active)
+                    {
+                        baseButton.ParentActive = false;
+                        break; // Exit the loop once we find the button
+                    }
+                }
             }
         }
-
-        // public override void LeftClick(UIMouseEvent evt)
-        // {
-
-        // var mainState = ModContent.GetInstance<MainSystem>()?.mainState;
-        // if (mainState == null)
-        //     return;
-
-        // // Create AllPanels list containing LeftSide and RightSidePanels
-        // List<DraggablePanel> AllPanels = new();
-        // AllPanels.AddRange(mainState.LeftSidePanels);
-        // AllPanels.AddRange(mainState.RightSidePanels);
-
-        // // Use AllPanels to find the panel that is our parent.
-        // foreach (var p in AllPanels)
-        // {
-        //     if (p != null && p.GetActive())
-        //     {
-        //         p.SetActive(false);
-        //         // Log.Info("CloseButtonPanel: Deactivated panel with name: " + p.GetType().Name);
-        //         break;
-        //     }
-        // }
-        // }
     }
 }

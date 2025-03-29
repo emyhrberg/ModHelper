@@ -12,8 +12,7 @@ namespace ModHelper.UI.Buttons
     public class LogButton(Asset<Texture2D> spritesheet, string buttonText, string hoverText, string hoverTextDescription) : BaseButton(spritesheet, buttonText, hoverText, hoverTextDescription)
     {
         // Set custom animation dimensions
-        private float _scale = 0.5f;
-        protected override float Scale => _scale;
+        protected override float Scale => 0.5f;
         protected override int FrameCount => 16;
         protected override int FrameSpeed => 4;
         protected override int FrameWidth => 74;
@@ -21,41 +20,14 @@ namespace ModHelper.UI.Buttons
 
         public override void LeftClick(UIMouseEvent evt)
         {
+            // Toggle the log panel status
             MainSystem sys = ModContent.GetInstance<MainSystem>();
-            List<DraggablePanel> rightSidePanels = sys?.mainState?.RightSidePanels;
+            List<BasePanel> panels = sys.mainState.AllPanels;
+            BasePanel logPanel = panels.FirstOrDefault(p => p is LogPanel);
+            logPanel?.SetActive(!logPanel.GetActive());
 
-            // replace with THIS panel
-            var panel = sys?.mainState?.logPanel;
-
-            // Disable all other panels
-            foreach (var p in rightSidePanels.Except([panel]))
-            {
-                if (p != panel && p.GetActive())
-                {
-                    p.SetActive(false);
-                }
-            }
-
-            // Toggle the log panel
-            if (panel.GetActive())
-            {
-                panel.SetActive(false);
-                ParentActive = false;
-            }
-            else
-            {
-                ParentActive = true;
-                panel.SetActive(true);
-            }
-
-            // Disable World, Log, UI, Mods buttons
-            foreach (var button in sys.mainState.AllButtons)
-            {
-                if (button is PlayerButton || button is WorldButton || button is UIElementButton || button is ModsButton)
-                {
-                    button.ParentActive = false;
-                }
-            }
+            // Toggle state of parentActive
+            ParentActive = !ParentActive;
         }
 
         public override void RightClick(UIMouseEvent evt)

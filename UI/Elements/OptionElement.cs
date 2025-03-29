@@ -13,7 +13,7 @@ namespace ModHelper.UI.Elements
     // Icon image
     // Mod name
     // Enabled text
-    public class OptionElement : UIPanel
+    public class OptionElement : Terraria.GameContent.UI.Elements.UIPanel
     {
         public string text;
         private OptionEnabledText enabledText;

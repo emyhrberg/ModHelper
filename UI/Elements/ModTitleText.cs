@@ -52,7 +52,7 @@ namespace ModHelper.UI.Elements
                 if (isConfigOpen)
                 {
                     hover = $"Open {internalModName} config";
-                    ChatHelper.NewText("Closing config for " + internalModName, new Color(226, 57, 39));
+                    ChatHelper.NewText($"Closing {internalModName} config");
                     Main.menuMode = 0;
                     Main.InGameUI.SetState(null);
                     isConfigOpen = false;
@@ -108,7 +108,7 @@ namespace ModHelper.UI.Elements
                     // Open the mod config UI.
                     Main.InGameUI.SetState(modConfigInstance as UIState);
                     Main.menuMode = 10024;
-                    ChatHelper.NewText("Opening config for " + modName, Color.Green);
+                    ChatHelper.NewText($"Opening {internalModName} config");
 
                     // Hover text update
                     hover = $"Close {internalModName} config";

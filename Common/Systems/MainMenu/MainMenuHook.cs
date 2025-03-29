@@ -6,7 +6,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace ModHelper.Common.Systems
+namespace ModHelper.Common.Systems.MainMenu
 {
     public class MainMenuHook : ModSystem
     {

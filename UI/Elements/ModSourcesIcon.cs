@@ -35,7 +35,7 @@ namespace ModHelper.UI.Elements
 
             // The hover image is drawn in the parent UIPanel class above everything else.
             // This is because the hover image is drawn on top of the icon.
-            /// <see cref="OptionPanel"/> Draw() method.
+            /// <see cref="BasePanel"/> Draw() method.
         }
     }
 }

@@ -8,12 +8,13 @@ using Terraria.UI;
 
 namespace ModHelper.UI.Elements
 {
-    public class UIElementPanel : OptionPanel
+    public class UIElementPanel : BasePanel
     {
         private UIElementSystem elementSystem;
         private UIElementState elementState;
 
-        public UIElementPanel() : base(title: "UI", scrollbarEnabled: true)
+        #region Constructor
+        public UIElementPanel() : base(header: "UI")
         {
             elementSystem = ModContent.GetInstance<UIElementSystem>();
             elementState = elementSystem.debugState;
@@ -167,18 +168,23 @@ namespace ModHelper.UI.Elements
 
             AddHeader($"All UIElements");
         }
+        #endregion
 
         // Dynamic UI elements for each UIElement type
         private List<string> elements = new List<string>();
         public Dictionary<string, UIElement> dynamicOptions = new();
 
+        #region Update
         public override void Update(GameTime gameTime)
         {
+            if (!Active)
+                return;
+
             base.Update(gameTime);
 
             // Only update once a second
-            if (Main.GameUpdateCount % 60 != 0)
-                return;
+            // if (Main.GameUpdateCount % 60 != 0)
+            // return;
 
             // Gather distinct UIElement type names
             var distinctTypes = elementState.elements
@@ -238,5 +244,6 @@ namespace ModHelper.UI.Elements
                     uiList.Add(elem);
             }
         }
+        #endregion
     }
 }

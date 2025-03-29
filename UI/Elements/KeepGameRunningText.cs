@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using ModHelper.Common.Configs;
 using ModHelper.Common.Systems;
 using ModHelper.Helpers;
-using ReLogic.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
@@ -13,20 +12,20 @@ using Terraria.UI.Chat;
 
 namespace ModHelper.UI.Elements
 {
-    public class DebugText : UIText
+    public class KeepGameRunningText : UIText
     {
         private bool Active = true;
 
-        public DebugText(string text, float scale = 0.4f, bool large = true) : base(text, scale, large)
+        public KeepGameRunningText(string text, float scale = 0.4f, bool large = true) : base(text, scale, large)
         {
             TextColor = Color.White;
-            VAlign = 0.9f;
+            VAlign = 0.8f;
             HAlign = 0.02f;
 
             float w = ChatManager.GetStringSize(FontAssets.MouseText.Value, text, Vector2.One).X;
             float h = ChatManager.GetStringSize(FontAssets.MouseText.Value, text, Vector2.One).Y;
             Width.Set(w, 0);
-            Height.Set(h * 2, 0);
+            Height.Set(h, 0);
         }
 
         public override void MouseOver(UIMouseEvent evt)
@@ -39,37 +38,40 @@ namespace ModHelper.UI.Elements
             TextColor = Color.White;
         }
 
+        public override void LeftClick(UIMouseEvent evt)
+        {
+            KeepGameRunning.KeepRunning = !KeepGameRunning.KeepRunning;
+
+            if (KeepGameRunning.KeepRunning)
+            {
+                ChatHelper.NewText("Keep Game Running: ON");
+            }
+            else
+            {
+                ChatHelper.NewText("Keep Game Running: OFF");
+            }
+        }
+
         public override void RightClick(UIMouseEvent evt)
         {
             Active = !Active;
 
-            Conf.C.ShowDebugText = !Conf.C.ShowDebugText; // toggle the config value
+            Conf.C.ShowGameKeepRunningText = !Conf.C.ShowGameKeepRunningText;
             Conf.Save();
 
             if (Active)
             {
-                ChatHelper.NewText("Show DebugText");
+                ChatHelper.NewText("Show Keep Game Running Text");
             }
             else
             {
-                ChatHelper.NewText("Hide DebugText");
+                ChatHelper.NewText("Hide Keep Game Running Text");
             }
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            // update the text to show playername, whoAmI, and FPS
-            string playerName = Main.LocalPlayer.name;
-            int fps = Main.frameRate;
-            int ups = Main.updateRate;
-            int myPlayer = Main.myPlayer; // the ID of the current player
-            string text = $"{playerName} ({myPlayer})" +
-                $"\n{fps}fps {ups}ups ({Main.upTimerMax.ToString("0.0")}ms)";
-
-            SetText(text, textScale: 0.4f, large: true);
-            // Log.Info("Setting text: " + text);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

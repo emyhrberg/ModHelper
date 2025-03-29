@@ -45,7 +45,7 @@ namespace ModHelper.UI.Elements
             // Set config to reload this mod
             ModsToReload.modsToReload.Clear();
             Conf.C.LatestModToReload = internalModName;
-            Conf.ForceSaveConfig(Conf.C);
+            Conf.Save();
 
             if (!ModsToReload.modsToReload.Contains(internalModName))
             {
@@ -58,16 +58,12 @@ namespace ModHelper.UI.Elements
                 Log.ClearClientLog();
 
             // 2 Prepare client data
-            ReloadUtilities.PrepareClient(ClientModes.SinglePlayer);
+            ReloadUtilities.PrepareClient(ClientMode.SinglePlayer);
 
             // 3 Exit server or world
             if (Main.netMode == NetmodeID.SinglePlayer)
             {
                 await ReloadUtilities.ExitWorldOrServer();
-            }
-            else if (Main.netMode == NetmodeID.MultiplayerClient)
-            {
-                await ReloadUtilities.ExitAndKillServer();
             }
 
             // 3 Reload

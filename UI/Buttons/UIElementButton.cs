@@ -23,41 +23,14 @@ namespace ModHelper.UI.Buttons
 
         public override void LeftClick(UIMouseEvent evt)
         {
+            // Open the log panel
             MainSystem sys = ModContent.GetInstance<MainSystem>();
-            List<DraggablePanel> rightSidePanels = sys?.mainState?.RightSidePanels;
+            List<BasePanel> panels = sys.mainState.AllPanels;
+            BasePanel uiElementPanel = panels.FirstOrDefault(p => p is UIElementPanel);
+            uiElementPanel?.SetActive(!uiElementPanel.GetActive()); // Set the log panel active if it exists
 
-            // replace with THIS panel
-            var panel = sys?.mainState?.uiPanel;
-
-            // Disable all other panels
-            foreach (var p in rightSidePanels.Except([panel]))
-            {
-                if (p != panel && p.GetActive())
-                {
-                    p.SetActive(false);
-                }
-            }
-
-            // Toggle the log panel
-            if (panel.GetActive())
-            {
-                panel.SetActive(false);
-                ParentActive = false;
-            }
-            else
-            {
-                ParentActive = true;
-                panel.SetActive(true);
-            }
-
-            // Disable World, Log, UI, Mods buttons
-            foreach (var button in sys.mainState.AllButtons)
-            {
-                if (button is PlayerButton || button is WorldButton || button is LogButton || button is ModsButton)
-                {
-                    button.ParentActive = false;
-                }
-            }
+            // Toggle state of parentActive
+            ParentActive = !ParentActive;
         }
 
         public override void RightClick(UIMouseEvent evt)

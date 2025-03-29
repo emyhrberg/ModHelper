@@ -19,7 +19,7 @@ namespace ModHelper.UI.Elements
     // Some padding
     // A folder icon to open this mod's folder
     // A .csproj icon which opens the project in Visual Studio
-    public class ModSourcesElement : UIPanel
+    public class ModSourcesElement : Terraria.GameContent.UI.Elements.UIPanel
     {
         public string cleanModName;
         public string modPath;

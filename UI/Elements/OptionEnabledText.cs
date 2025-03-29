@@ -16,7 +16,6 @@ namespace ModHelper.UI.Elements
         public OptionEnabledText(string text) : base(text)
         {
             // text and size and position
-            // enabledText.ShadowColor = new Color(226, 57, 39); // TODO change background color to this, shadowcolor is not it.
             TextColor = red;
 
             // Position: Centered vertically, 65 pixels from the right

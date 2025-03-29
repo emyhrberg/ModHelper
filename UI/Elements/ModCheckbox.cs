@@ -70,7 +70,7 @@ namespace ModHelper.UI.Elements
                     {
                         // Update config
                         Conf.C.LatestModToReload = modSourcePathString;
-                        Conf.ForceSaveConfig(Conf.C);
+                        Conf.Save();
 
                         // only add if it doesnt already exist
                         if (!ModsToReload.modsToReload.Contains(modSourcePathString))
@@ -84,7 +84,7 @@ namespace ModHelper.UI.Elements
                         // Log.Info("removing mod to reload: " + modSourcePathString);
                         ModsToReload.modsToReload.Remove(modSourcePathString);
                         Conf.C.LatestModToReload = "";
-                        Conf.ForceSaveConfig(Conf.C);
+                        Conf.Save();
 
                         // unchecked.
                         // update config if modstoreload only has one entry
@@ -92,15 +92,13 @@ namespace ModHelper.UI.Elements
                         {
                             Conf.C.LatestModToReload = ModsToReload.modsToReload.FirstOrDefault();
                             Log.Info("Setting single mod to reload to: " + Conf.C.LatestModToReload);
-                            Conf.ForceSaveConfig(Conf.C);
+                            Conf.Save();
                         }
                     }
 
                     // set hovertext in reloadSP
                     ReloadSPButton sp = sys.mainState.reloadSPButton;
-                    ReloadMPButton mp = sys.mainState.reloadMPButton;
                     sp.UpdateHoverText();
-                    mp.UpdateHoverText();
 
                     Log.Info("mods to reload: " + string.Join(", ", ModsToReload.modsToReload));
                     Main.NewText("Mods to reload: " + string.Join(", ", ModsToReload.modsToReload));

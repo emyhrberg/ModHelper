@@ -1,13 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ModHelper.Helpers;
 using ModHelper.UI.Elements;
 using ReLogic.Content;
 using Terraria;
 using Terraria.ModLoader;
-using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace ModHelper.UI.Buttons
@@ -26,41 +23,14 @@ namespace ModHelper.UI.Buttons
 
         public override void LeftClick(UIMouseEvent evt)
         {
+            // Open the log panel
             MainSystem sys = ModContent.GetInstance<MainSystem>();
-            List<DraggablePanel> rightSidePanels = sys?.mainState?.RightSidePanels;
+            List<BasePanel> panels = sys.mainState.AllPanels;
+            BasePanel modsPanel = panels.FirstOrDefault(p => p is ModsPanel);
+            modsPanel?.SetActive(!modsPanel.GetActive()); // Set the log panel active if it exists
 
-            // replace with THIS panel
-            var panel = sys?.mainState?.modsPanel;
-
-            // Disable all other panels
-            foreach (var p in rightSidePanels.Except([panel]))
-            {
-                if (p != panel && p.GetActive())
-                {
-                    p.SetActive(false);
-                }
-            }
-
-            // Toggle the log panel
-            if (panel.GetActive())
-            {
-                panel.SetActive(false);
-                ParentActive = false;
-            }
-            else
-            {
-                ParentActive = true;
-                panel.SetActive(true);
-            }
-
-            // Disable World, Log, UI, Mods buttons
-            foreach (var button in sys.mainState.AllButtons)
-            {
-                if (button is PlayerButton || button is WorldButton || button is UIElementButton || button is LogButton)
-                {
-                    button.ParentActive = false;
-                }
-            }
+            // Toggle state of parentActive
+            ParentActive = !ParentActive;
         }
 
         public override void RightClick(UIMouseEvent evt)

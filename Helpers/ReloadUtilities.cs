@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using ModHelper.Common.Configs;
-using ModHelper.PacketHandlers;
 using MonoMod.RuntimeDetour;
 using Terraria;
 using Terraria.ID;
@@ -15,12 +14,7 @@ namespace ModHelper.Helpers
     //All functions, related to reload
     internal class ReloadUtilities
     {
-        public const string pipeName = "ModHelperPipe";
-        public const string pipeNameAfterRebuild = "ModHelperPipeAfterRebuild";
-
-        //public static NamedPipeServerStream Pipe {  get; set; }\
-
-        public static void PrepareClient(ClientModes clientMode)
+        public static void PrepareClient(ClientMode clientMode)
         {
             ClientDataHandler.ClientMode = clientMode;
             ClientDataHandler.PlayerID = Utilities.FindPlayerId();
@@ -50,16 +44,12 @@ namespace ModHelper.Helpers
                 Log.ClearClientLog();
 
             // 2 Prepare client data
-            ReloadUtilities.PrepareClient(ClientModes.SinglePlayer);
+            ReloadUtilities.PrepareClient(ClientMode.SinglePlayer);
 
             // 3 Exit server or world
             if (Main.netMode == NetmodeID.SinglePlayer)
             {
                 await ReloadUtilities.ExitWorldOrServer();
-            }
-            else if (Main.netMode == NetmodeID.MultiplayerClient)
-            {
-                await ReloadUtilities.ExitAndKillServer();
             }
 
             // 4 Reload
@@ -91,17 +81,6 @@ namespace ModHelper.Helpers
                 return Task.CompletedTask;
             }
 
-        }
-
-        public static Task ExitAndKillServer()
-        {
-            // Sending packet to server to inform about reloading mod in multiplayer
-            ModNetHandler.RefreshServer.SendKillingServer(255, Main.myPlayer, Conf.C.SaveWorldOnReload);
-
-            // idk if that needed for exiting server, but maybe we need to save player data idk
-            var tcs = new TaskCompletionSource();
-            WorldGen.SaveAndQuit(tcs.SetResult);
-            return tcs.Task;
         }
 
         public static void ReloadMod()
@@ -230,14 +209,6 @@ namespace ModHelper.Helpers
                     return Task.CompletedTask;
                 }
             });
-        }
-
-        //string can be replaced with json if needed
-        //for me the fact of sending messages would be enough
-        public static async Task<string?> ReadPipeMessage(NamedPipeServerStream pipe)
-        {
-            using StreamReader reader = new StreamReader(pipe);
-            return await reader.ReadLineAsync();
         }
     }
 }

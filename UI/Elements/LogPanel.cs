@@ -1,40 +1,26 @@
 using System;
 using System.Linq;
-using System.Reflection;
 using log4net;
 using log4net.Core;
 using log4net.Repository.Hierarchy;
-using ModHelper.Common.Configs;
+using Microsoft.Xna.Framework;
 using ModHelper.Helpers;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace ModHelper.UI.Elements
 {
-    public class LogPanel : OptionPanel
+    public class LogPanel : BasePanel
     {
-        public LogPanel() : base(title: "Log", scrollbarEnabled: true)
+        public LogPanel() : base(header: "Log")
         {
             AddPadding(5);
             AddHeader(title: "Log",
                 onLeftClick: Log.OpenLogFolder,
                 hover: "Click to open the folder at Steam/steamapps/common/tModLoader/tModLoader-Logs");
 
-            AddAction(Log.OpenClientLog, "Open Client Log", "Click to open client.log");
-            AddAction(Log.OpenServerLog, "Open Server Log", "Click to open server.log");
+            AddAction(Log.OpenClientLog, "Open client.log", "Click to open client.log");
+            AddAction(Log.OpenServerLog, "Open server.log", "Click to open server.log");
             AddAction(Log.ClearClientLog, "Clear Log", "Clear the client.log file");
-
-            AddOption("Clear Log On Reload", ClearClientOnReload, "When reloading mods, clears the entire client.log between reloads", padding: 3f);
-            AddPadding(5);
-            AddPadding();
-
-            AddHeader(title: "Game Path",
-                onLeftClick: Log.OpenEnabledJsonFolder,
-                hover: "Click to open the folder at Documents/My Games/Terraria/ModLoader");
-            ActionOption openEnabled = new(Log.OpenEnabledJson, "Open enabled.json", "This is a json file that shows a list of all your currently enabled mods", Log.OpenEnabledJsonFolder);
-            AddPadding(5);
-            uiList.Add(openEnabled);
+            AddAction(Log.OpenEnabledJson, "Open enabled.json", "Click to open enabled.json", Log.OpenEnabledJsonFolder);
             AddPadding();
 
             AddHeader(title: "Log Level", hover: "Set the log level for each logger (0-5): Off, Error, Warn, Info, Debug, All");
@@ -67,7 +53,7 @@ namespace ModHelper.UI.Elements
             All = 5
         }
 
-        private void SetLogLevel(float value, Logger logger)
+        private static void SetLogLevel(float value, Logger logger)
         {
             if (logger == null)
                 return;
@@ -86,23 +72,13 @@ namespace ModHelper.UI.Elements
             };
         }
 
-        private static Logger GetLogger(string loggerName = "tML")
+        public override void Update(GameTime gameTime)
         {
-            PropertyInfo tmlProp = typeof(Logging).GetProperty(loggerName, BindingFlags.Static | BindingFlags.NonPublic);
-            if (tmlProp == null)
-                return null;
+            Log.SlowInfo("LogPanel Active: " + Active);
+            if (!Active)
+                return;
 
-            ILog tmlLogger = (ILog)tmlProp.GetValue(null);
-            if (tmlLogger == null)
-                return null;
-
-            return tmlLogger.Logger as Logger;
-        }
-
-        private void ClearClientOnReload()
-        {
-            Conf.C.ClearClientLogOnReload = !Conf.C.ClearClientLogOnReload;
-            Conf.ForceSaveConfig(Conf.C);
+            base.Update(gameTime);
         }
     }
 }

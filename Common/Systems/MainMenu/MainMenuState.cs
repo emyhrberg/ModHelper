@@ -5,11 +5,12 @@ using ModHelper.Helpers;
 using Terraria;
 using Terraria.UI;
 
-namespace ModHelper.Common.Systems
+namespace ModHelper.Common.Systems.MainMenu
 {
     public class MainMenuState : UIState
     {
         private float verticalOffset = 0.06f;
+        public bool isLoadingSingleplayer = false;
 
         public MainMenuState()
         {
@@ -95,6 +96,8 @@ namespace ModHelper.Common.Systems
 
         private void SkipSelectSingleplayer()
         {
+            isLoadingSingleplayer = true;
+
             Log.Info("EnterSingleplayerWorld() called!");
 
             // Loading lists of Players and Worlds
@@ -116,9 +119,13 @@ namespace ModHelper.Common.Systems
             var player = Main.PlayerList.FirstOrDefault();
             var world = Main.WorldList.FirstOrDefault();
 
+            // Main.menuMode = 0; // purely visual
+
             // Start game with pair
             Main.SelectPlayer(player);
             Main.ActiveWorldFileData = world;
+
+            // Main.menuMode = 0; // purely visual
 
             Log.Info($"Starting game with Player: {player.Name}, World: {Main.WorldList.FirstOrDefault().Name}");
 

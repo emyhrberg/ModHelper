@@ -3,7 +3,7 @@ using Terraria.GameContent.UI.Elements;
 
 namespace ModHelper.UI.Elements
 {
-    public class CustomTitlePanel : UIPanel
+    public class CustomTitlePanel : Terraria.GameContent.UI.Elements.UIPanel
     {
         public UIText HeaderText;
         private Color lightBlue = new(63, 82, 151);

@@ -15,7 +15,7 @@ namespace ModHelper.UI.Elements
     // Icon image
     // Mod name
     // Enabled text
-    public class ModElement : UIPanel
+    public class ModElement : Terraria.GameContent.UI.Elements.UIPanel
     {
         public string cleanModName;
         public string internalName;

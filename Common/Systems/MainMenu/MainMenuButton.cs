@@ -8,7 +8,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
-namespace ModHelper.Common.Systems
+namespace ModHelper.Common.Systems.MainMenu
 {
     public class MainMenuButton : UIText
     {
