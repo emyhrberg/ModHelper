@@ -1,4 +1,5 @@
 using System.IO;
+using Microsoft.Build.Locator;
 using ModHelper.PacketHandlers;
 using Terraria.ModLoader;
 
@@ -14,6 +15,7 @@ namespace ModHelper
         public override void Load()
         {
             Instance = this;
+            MSBuildLocator.RegisterDefaults();
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)

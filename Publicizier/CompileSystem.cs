@@ -17,6 +17,11 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
+using Microsoft.Build.Evaluation;
+using Microsoft.Build.Execution;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Logging;
+
 namespace ModHelper.Publicizier
 {
     public class CompileSystem : ModSystem
@@ -52,6 +57,7 @@ namespace ModHelper.Publicizier
             Assembly tModLoaderAssembly = typeof(Main).Assembly;
             Type modCompileType = tModLoaderAssembly.GetType("Terraria.ModLoader.Core.ModCompile");
             MethodInfo roslynCompileMethod = modCompileType.GetMethod("RoslynCompile", BindingFlags.NonPublic | BindingFlags.Static);
+            /*
             RoslynCompileHook = new Hook(roslynCompileMethod,
                 (RoslynCompileDelegate orig, string name, List<string> references, string[] files, string[] preprocessorSymbols, bool allowUnsafe, out byte[] code, out byte[] pdb) =>
                 {
@@ -205,7 +211,93 @@ namespace ModHelper.Publicizier
                         // Return the original method
                         return orig(name, references, files, preprocessorSymbols, allowUnsafe, out code, out pdb);
                     }
-                });
+                });*/
+            RoslynCompileHook = new Hook(roslynCompileMethod,
+                (RoslynCompileDelegate orig, string name, List<string> references, string[] files, string[] preprocessorSymbols, bool allowUnsafe, out byte[] code, out byte[] pdb) =>
+                {
+                    Log.Info($"[ModHelper] Intercepted RoslynCompile for mod: {name}");
+
+                    code = Array.Empty<byte>();
+                    pdb = Array.Empty<byte>();
+
+                    string csprojPath = CompilerUtilities.FindCsprojFile(name, files);
+                    if (csprojPath == null)
+                    {
+                        Log.Warn($"[ModHelper] .csproj not found for mod: {name}, falling back to default compiler.");
+                        return orig(name, references, files, preprocessorSymbols, allowUnsafe, out code, out pdb);
+                    }
+
+                    string objDir = Path.Combine(Path.GetDirectoryName(csprojPath), "obj");
+                    string assetsFile = Path.Combine(objDir, "project.assets.json");
+                    if (File.Exists(assetsFile))
+                    {
+                        try
+                        {
+                            File.Delete(assetsFile);
+                            Log.Info("[ModHelper] Deleted old project.assets.json to avoid decode error.");
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Warn($"[ModHelper] Could not delete assets cache: {ex}");
+                        }
+                    }
+
+                    Log.Info($"[ModHelper] Found .csproj: {csprojPath}");
+                    string modDir = Path.GetDirectoryName(csprojPath);
+
+                    try
+                    {
+                        var globalProperties = new Dictionary<string, string>
+                        {
+                            ["Configuration"] = "Debug",
+                            ["Platform"] = "AnyCPU"
+                        };
+
+                        var buildRequest = new BuildRequestData(csprojPath, globalProperties, null, new[] { "Restore", "Build" }, null);
+                        var buildParameters = new BuildParameters(ProjectCollection.GlobalProjectCollection)
+                        {
+                            Loggers = new List<Microsoft.Build.Framework.ILogger> { new ConsoleLogger(LoggerVerbosity.Detailed, msg => Log.Info(msg.TrimEnd()), color => { }, null) }
+                        };
+
+                        var result = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
+
+                        if (result.OverallResult != BuildResultCode.Success)
+                        {
+                            Log.Warn("[ModHelper] MSBuild compilation failed. Falling back to default compiler.");
+                            return orig(name, references, files, preprocessorSymbols, allowUnsafe, out code, out pdb);
+                        }
+
+                        Log.Info("[ModHelper] Mod compiled successfully via MSBuild.");
+
+                        string outputDll = Directory.GetFiles(modDir, "*.dll", SearchOption.AllDirectories)
+                            .FirstOrDefault(f => Path.GetFileNameWithoutExtension(f).Equals(name, StringComparison.OrdinalIgnoreCase));
+                        string outputPdb = Directory.GetFiles(modDir, "*.pdb", SearchOption.AllDirectories)
+                            .FirstOrDefault(f => Path.GetFileNameWithoutExtension(f).Equals(name, StringComparison.OrdinalIgnoreCase));
+
+                        if (outputDll == null)
+                        {
+                            Log.Warn("[ModHelper] Compiled DLL not found after MSBuild. Falling back to default compiler.");
+                            return orig(name, references, files, preprocessorSymbols, allowUnsafe, out code, out pdb);
+                        }
+
+                        code = File.ReadAllBytes(outputDll);
+                        pdb = outputPdb != null ? File.ReadAllBytes(outputPdb) : Array.Empty<byte>();
+
+                        Log.Info("[ModHelper] Returning compiled assembly from MSBuild.");
+                        return Array.Empty<Diagnostic>();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warn($"[ModHelper] Exception during MSBuild compilation: {ex}");
+                        return orig(name, references, files, preprocessorSymbols, allowUnsafe, out code, out pdb);
+                    }
+                    finally
+                    {
+                        RoslynCompileHook?.Dispose();
+                    }
+                }
+            );
+
             GC.SuppressFinalize(RoslynCompileHook);
 
             LocalMod[] l = [];
