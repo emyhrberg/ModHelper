@@ -79,7 +79,7 @@ namespace ModHelper.UI.Elements
             string netmode = Main.netMode switch
             {
                 NetmodeID.SinglePlayer => "SP",
-                NetmodeID.MultiplayerClient => "SP",
+                NetmodeID.MultiplayerClient => "MP",
                 _ => "Unknown"
             };
 

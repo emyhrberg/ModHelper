@@ -21,13 +21,15 @@ namespace ModHelper.Helpers
             // Hardcoded panel position and size.
             // (108, Main.screenHeight/2 + 60) is used as the base text position.
             // The panel is 200x50, centered on that point.
-            Vector2 basePos = new Vector2(108, Main.screenHeight / 2f - 55);
+            Vector2 basePos = new Vector2(113, Main.screenHeight / 2f);
             int width = 300;
             int height = 70;
-            Rectangle tooltipRect = new Rectangle((int)basePos.X - 100, (int)basePos.Y - 25, width, height);
+            int offsetY = -35; // move it below the text
+            Rectangle tooltipRect = new Rectangle((int)basePos.X - 100, (int)basePos.Y + offsetY, width, height);
 
             // Draw background panel.
-            Color darkBlue = UICommon.DefaultUIBlue;
+            //Color darkBlue = UICommon.DefaultUIBlue;
+            Color darkBlue = ColorHelper.DarkBluePanel;
             Utils.DrawInvBG(Main.spriteBatch, tooltipRect, darkBlue);
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;

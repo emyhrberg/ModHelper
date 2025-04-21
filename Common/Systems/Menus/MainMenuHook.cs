@@ -79,16 +79,18 @@ namespace ModHelper.Common.Systems.Menus
             // Menu options with corresponding actions
             var menuOptions = new (string Text, Action Action, float scale, string tooltip)[]
             {
-                ($"{mod.DisplayNameClean} v{mod.Version}", null, 1.15f, "Welcome to Mod Helper, the best mod for modding!"),
+                ($"{mod.DisplayNameClean} v{mod.Version}", null, 1.15f, "Welcome to Mod Helper the mod! Visualize config to customize this mod"),
+                (" ", null, 1.15f, ""), // empty line
+                ($"Options", null, 1.15f, "Options for Mod Helper"),
                 ("Join Singleplayer", JoinSingleplayer, 1.02f, "Enter a singleplayer world with last selected player and world"),
                 ("Start Server", StartServer, 1.02f, "Starts a server instance with cmd"),
                 ("Start Client", StartClient, 1.02f, "Starts another tML instance with cmd"),
                 ("Open Log", Log.OpenClientLog, 1.02f, "Opens the client.log of this client"),
                 ("Clear Log", Log.ClearClientLog, 1.02f, "Clears the client.log of this client"),
                 ("Open config", OpenConfig, 1.02f, "Open the Mod Helper config to change settings"),
-                ("Reload", async () => await ReloadSelectedMod(), 1.02f, "Reload the selected mod (see in-game)"),
+                ("Reload", async () => await ReloadSelectedMod(), 1.02f, "Reload the selected mod(s)"),
                 (" ", null, 1.15f, ""), // empty line
-                ($"Cotlim Is The Best", null, 1.15f, "He really is!"),
+                ($"Multiplayer", null, 1.15f, "Functionality for navigating multiplayer testing"),
                 ("Host Multiplayer", HostMultiplayer, 1.02f, "Start a multiplayer world with last selected player and world"),
                 ("Join Multiplayer", JoinMultiplayer, 1.02f, "Enter the multiplayer world with first available player"),
             };
@@ -98,7 +100,7 @@ namespace ModHelper.Common.Systems.Menus
                 // Measure text
                 Vector2 size = FontAssets.MouseText.Value.MeasureString(text) * 0.9f;
                 size.Y *= 0.9f; // Increase the Y size by 50%
-                Vector2 hoverSize = new Vector2(size.X, size.Y * 1.26f);
+                Vector2 hoverSize = new(size.X, size.Y * 1.26f);
                 // Check if mouse is hovering it
                 bool hovered = Main.MouseScreen.Between(drawPos, drawPos + hoverSize);
 
