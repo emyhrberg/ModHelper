@@ -37,7 +37,6 @@ namespace ModHelper.UI.ModElements
             }
 
             modSourcesPanelConfig = new ModSourcesPanelConfig(this);
-            modSourcesPanelConfig.SetActive(true);
             Append(modSourcesPanelConfig);
 
             Recalculate();

@@ -21,24 +21,10 @@ namespace ModHelper.UI.AbstractElements
         public UIList uiList;
         protected UIScrollbar scrollbar;
 
-        private readonly int panelPadding = 12;
-
         // Panel values
-        private bool Active = false; // default to false
         public string Header = "";
         public TitlePanel TitlePanel;
 
-        // Dragging
-        private bool dragging;
-        private Vector2 dragOffset;
-        private const float DragThreshold = 3f; // very low threshold for dragging
-        private Vector2 mouseDownPos;
-
-        public ResizeIcon resizeButton;
-
-        // Its associated button. Used so CloseButtonPanel can close the correct panel
-        // And update its state of "open" panel for a button which is highlighted.
-        public BaseButton AssociatedButton { get; set; } = null;
 
         #region Constructor
         public BasePanelConfig(string header, bool scrollbarEnabled = true)
@@ -109,45 +95,5 @@ namespace ModHelper.UI.AbstractElements
         }
 
         #endregion
-
-        public bool GetActive() => Active;
-        public bool SetActive(bool active) => Active = active;
-
-        #region update
-
-        public override void Update(GameTime gameTime)
-        {
-            if (!Active)
-                return;
-
-            base.Update(gameTime);
-
-            if (ContainsPoint(Main.MouseScreen))
-            {
-                Main.LocalPlayer.mouseInterface = true;
-            }
-
-            if (dragging)
-            {
-                float dragDistance = Vector2.Distance(new Vector2(Main.mouseX, Main.mouseY), mouseDownPos);
-                if (dragDistance > DragThreshold)
-                {
-                    Left.Set(Main.mouseX - dragOffset.X, 0f);
-                    Top.Set(Main.mouseY - dragOffset.Y, 0f);
-                    Recalculate();
-                }
-            }
-        }
-
-        #endregion
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            if (!Active)
-                return;
-
-            // first draw everything in the panel
-            base.Draw(spriteBatch);
-        }
     }
 }

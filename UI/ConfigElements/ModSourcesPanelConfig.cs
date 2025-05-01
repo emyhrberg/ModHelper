@@ -99,19 +99,5 @@ namespace ModHelper.UI.ModElements
             return strings;
         }
         #endregion
-
-        #region Navigation methods
-        private void GoToModSources()
-        {
-            WorldGen.JustQuit();
-            Main.menuMode = 10001;
-        }
-
-        private void GoToModsList()
-        {
-            WorldGen.JustQuit();
-            Main.menuMode = 10000;
-        }
-        #endregion
     }
 }
