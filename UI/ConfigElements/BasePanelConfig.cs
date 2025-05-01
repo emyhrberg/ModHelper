@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ModHelper.Helpers;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ModLoader.Config.UI;
 using Terraria.UI;
 
 namespace ModHelper.UI.AbstractElements
@@ -18,7 +19,7 @@ namespace ModHelper.UI.AbstractElements
         // 12 is minus the padding of a panel
         protected float currentTop = 35 - 12;
 
-        public UIList uiList;
+        public NestedUIList uiList;
         protected UIScrollbar scrollbar;
 
         // Panel values
@@ -41,7 +42,7 @@ namespace ModHelper.UI.AbstractElements
             Header = header;
 
             // Create a new list
-            uiList = new UIList
+            uiList = new NestedUIList
             {
                 MaxWidth = { Percent = 1f },
                 Width = { Percent = 1f },
