@@ -121,7 +121,7 @@ namespace ModHelper.Common.Systems
             // custom left pos. override default
             // convert vector2 to valign and halign
             // Read the VAlign and HAlign from the config
-            Vector2 buttonsPosition = new(0.5f, 1.0f);
+            Vector2 buttonsPosition = new(0.3f, 0.8f);
             button.VAlign = buttonsPosition.Y;
             button.HAlign = buttonsPosition.X;
 

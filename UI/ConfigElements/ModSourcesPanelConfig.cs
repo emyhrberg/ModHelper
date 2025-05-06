@@ -16,15 +16,11 @@ namespace ModHelper.UI.ModElements
 
         public ModSourcesConfig parentConfig;
 
-        #region Constructor
-        public ModSourcesPanelConfig(ModSourcesConfig parent) : base(header: "Mod Sources", scrollbarEnabled: true)
+        public ModSourcesPanelConfig(ModSourcesConfig parent) : base(scrollbarEnabled: true)
         {
             parentConfig = parent;
             ConstructModSources();
         }
-        #endregion
-
-        #region Constructing mod lists
 
         private void ConstructModSources()
         {
@@ -43,12 +39,6 @@ namespace ModHelper.UI.ModElements
                 uiList.Add(modSourcesElement);
                 AddPadding(3);
             }
-
-            // if mwe have less than 10 mods, remove the scrollbar
-            // if (modSourcesElements.Count < 10)
-            // {
-            // scrollbar.Remove();
-            // }
         }
 
         private string GetModSourcesCleanName(string modFolder)
@@ -98,6 +88,5 @@ namespace ModHelper.UI.ModElements
             }
             return strings;
         }
-        #endregion
     }
 }
