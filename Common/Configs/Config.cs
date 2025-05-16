@@ -12,6 +12,9 @@ namespace ModReloader.Common.Configs
 
         [Header("Reload")]
 
+        [DefaultValue(true)]
+        public bool AddBloat = true;
+
         [CustomModConfigItem(typeof(ModSourcesConfig))]
         public List<string> ModsToReload = [];
 

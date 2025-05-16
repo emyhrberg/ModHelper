@@ -17,7 +17,7 @@ namespace ModReloader.Common.Systems.Integrations
 
         public override string DisplayName => "Log Options";
 
-        public override string Description => $"Change log options here";
+        public override string Description => Conf.C.AddBloat ? "Modify the configuration options that control how changelog data is generated, stored, and shown within the context of this modding utility." : $"Change log options here";
 
         public override void OnActivate()
         {

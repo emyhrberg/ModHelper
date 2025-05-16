@@ -18,7 +18,7 @@ namespace ModReloader.Common.Systems.Integrations
 
         public override string DisplayName => "UIElement Hitboxes";
 
-        public override string Description => $"Toggle UIElement hitboxes";
+        public override string Description => Conf.C.AddBloat ? "Switch the visibility and interaction debugging state of UIElement bounding regions.\nThis function enables developers to render or suppress visual outlines representing the active rectangular hitboxes associated with UI components, facilitating layout diagnostics and precision tuning during UI development workflows." : $"Toggle UIElement hitboxes";
 
         public override void OnActivate()
         {
