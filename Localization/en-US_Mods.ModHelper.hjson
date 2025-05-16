@@ -104,5 +104,10 @@ Configs: {
 			Label: Show Copy To Clipboard Button
 			Tooltip: A new button will appear allowing you to copy the message in the error menu
 		}
+
+		AddBloat: {
+			Label: Add Bloat
+			Tooltip: ""
+		}
 	}
 }

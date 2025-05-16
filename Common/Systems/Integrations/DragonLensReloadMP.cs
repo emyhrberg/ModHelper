@@ -12,7 +12,7 @@ namespace ModHelper.Common.Systems.Integrations
 
         public override string DisplayName => "Reload MP";
 
-        public override string Description => $"Reloads {string.Join(", ", Conf.C.ModsToReload)}";
+        public override string Description => Conf.C.AddBloat ? $"Initiates a targeted runtime reinitialization sequence for the following specified mod assemblies: {string.Join(", ", Conf.C.ModsToReload)}." : $"Reloads {string.Join(", ", Conf.C.ModsToReload)}";
 
         public override async void OnActivate()
         {

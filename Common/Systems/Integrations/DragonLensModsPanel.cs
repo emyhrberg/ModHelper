@@ -3,6 +3,7 @@ using DragonLens.Core.Systems.ThemeSystem;
 using DragonLens.Core.Systems.ToolSystem;
 using DragonLens.Helpers;
 using Microsoft.Xna.Framework.Graphics;
+using ModHelper.Common.Configs;
 using ModHelper.Helpers;
 using ModHelper.UI.Elements.PanelElements;
 using Terraria.UI;
@@ -17,7 +18,7 @@ namespace ModHelper.Common.Systems.Integrations
 
         public override string DisplayName => "Mods List";
 
-        public override string Description => $"Enable or disable mods";
+        public override string Description => Conf.C.AddBloat ? "This interface allows the user to programmatically control the runtime inclusion state of modular content extensions (commonly referred to as 'mods'). Through toggling specific flags, one can determine whether a given mod should be initialized, loaded into memory, and allowed to influence the game's behavior during execution, or instead be excluded from the active mod pipeline until re-enabled." : $"Enable or disable mods";
 
         public override void OnActivate()
         {
